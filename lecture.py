@@ -27,3 +27,5 @@ print(peter_parker.power)
 print(peter_parker.energy)
 print(peter_parker.hands)
 peter_parker.webshoot()
+
+print(SpiderMan.mro())
