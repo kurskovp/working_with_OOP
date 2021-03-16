@@ -32,7 +32,11 @@ class SpiderMan(Character, Spider):
             super().webshoot()
          else:
             print('No web!')
-
+'''разница между self и super: 
+self - это функция использования атрибута только своего класса
+super - это функция применения атрибута от родителя если даже в своём классе
+на него нет указания
+'''
 peter_parker = SpiderMan('Peter Parker', 80)
 # print(peter_parker.name)
 # print(peter_parker.power)
