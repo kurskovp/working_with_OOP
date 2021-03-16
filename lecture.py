@@ -48,3 +48,16 @@ peter_parker.backpack.append('web')
 peter_parker.attack()
 
 print(SpiderMan.mro())
+
+''' добавим возможность сравнения персонажей '''
+    def __lf__(self,othe):
+        if not isinstance(othe, Character):
+            print('Not a Character!')
+        return self.power < othe.power
+
+peter_parker = SpiderMan('Peter Parker', 80)
+miles_moreles = SpiderMan('Miles Morales', 85)
+
+print(peter_parker < miles_moreles)
+# и даже больше" будет работать!
+print(peter_parker > miles_moreles)
