@@ -7,88 +7,132 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
 
-
-    def set_lecturer_grade(self, lecturer, course, grade):
-        if course in self.courses_in_progress:
-            if course in lecturer.teaching_course:
-                lecturer.grades[course] = grade
+    def rate_lecturer(self, lecturer, course, grade):
+        if isinstance(lecturer,
+                      Lecturer) and course in lecturer.courses_attached and course in self.courses_in_progress:
+            if grade > 10:
+                grade = 10
+            elif grade < 1:
+                grade = 1
+            if course in lecturer.grades:
+                lecturer.grades[course] += [grade]
             else:
-                print(f'Преподаватель этот курс не ведет - {course}')
+                lecturer.grades[course] = [grade]
         else:
-            print(f'Студент не записан на данный курс, оценку лектору поставить не может - {course}')
+            return 'Ошибка'
 
-
-    # def get_av_grades(self):
-    #     self.add = sum(self.grades)/len(self.grades)
-    #     return add
+    def get_average(self):
+        average = 0
+        for grade in self.grades:
+            average += grade
+        grades_count = len(self.grades)
+        if grades_count:
+            return average / grades_count
 
     def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname}   \nКурсы в прцессе изучения: {self.courses_in_progress }' \
-               f'\nОценки за курсы: {self.grades}'
+        result = 'Имя: ' + self.name + '\n'
+        result += 'Фамилия: ' + self.surname
+        result += 'Средняя оценка за домашнии задания: ' + self.get_average()
+        result += 'Курсы в процессе изучения: ' + ', '.join(self.courses_in_progress)
+        result += 'Завершенные курсы: ' + ', '.join(self.finished_courses)
+        return result
+
+    def __lt__(self, other):
+        return self.get_average() < other.get_average()
+
+    def __le__(self, other):
+        return self.get_average() <= other.get_average()
+
+    def __gt__(self, other):
+        return self.get_average() > other.get_average()
+
+    def __ge__(self, other):
+        return self.get_average() >= other.get_average()
+
+    def __eq__(self, other):
+        return self.get_average() == other.get_average()
+
+    def __ne__(self, other):
+        return self.get_average() != other.get_average()
+
 
 class Mentor:
-    def __init__(self, name, surname, teaching_course):
+    def __init__(self, name, surname):
         self.name = name
         self.surname = surname
-        self.teaching_course = teaching_course
-
+        self.courses_attached = []
 
 
 class Lecturer(Mentor):
-    def __init__(self,name, surname, teaching_course):
-        Mentor. __init__ (self,name, surname, teaching_course)
+    def __init__(self, name, surname):
+        super(name, surname).__init__()
         self.grades = {}
 
-    def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {self.grades} '
+    def get_average(self):
+        average = 0
+        for grade in self.grades:
+            average += grade
+        grades_count = len(self.grades)
+        if grades_count:
+            return average / grades_count
 
+    def __str__(self):
+        result = 'Имя: ' + self.name + '\n'
+        result += 'Фамилия: ' + self.surname
+        result += 'Средняя оценка за лекции: ' + self.get_average()
+        return result
+
+    def __lt__(self, other):
+        return self.get_average() < other.get_average()
+
+    def __le__(self, other):
+        return self.get_average() <= other.get_average()
+
+    def __gt__(self, other):
+        return self.get_average() > other.get_average()
+
+    def __ge__(self, other):
+        return self.get_average() >= other.get_average()
+
+    def __eq__(self, other):
+        return self.get_average() == other.get_average()
+
+    def __ne__(self, other):
+        return self.get_average() != other.get_average()
 
 
 class Reviewer(Mentor):
-    def __init__(self,name, surname, teaching_course):
-        Mentor. __init__ (self,name, surname, teaching_course)
+    def __init__(self, name, surname):
+        super(name, surname).__init__()
 
-    def set_student_grade(self, student, cours, grade):
-        if cours in self.teaching_course:
-            if cours in student.courses_in_progress:
-                student.grades[cours] = grade
+    def rate_student(self, student, course, grade):
+        if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
+            if grade > 10:
+                grade = 10
+            elif grade < 1:
+                grade = 1
+            if course in student.grades:
+                student.grades[course] += [grade]
             else:
-                print(f'Преподаватель этот курс не должен проверять - {cours}')
+                student.grades[course] = [grade]
         else:
-            print(f'Студент не записан на данный курс - {cours}')
+            return 'Ошибка'
+
+    def __str__(self):
+        result = 'Имя: ' + self.name + '\n'
+        result += 'Фамилия: ' + self.surname
+        return result
 
 
+#
+best_student = Student('Ruoy', 'Eman', 'your_gender')
+best_student.courses_in_progress += ['Python']
 
-# Проверочный блок:
+cool_mentor = Mentor('Some', 'Buddy')
+cool_mentor.courses_attached += ['Python']
 
-john = Student("John", "Smith", "male")
-john.courses_in_progress = ["Python", "Git"]
-bill = Student("Bill", "Cogan", "male")
-bill.courses_in_progress = ["Python", "Biology", "Git"]
-print('Студенты', sep='\n')
-print(john, bill, sep='\n \n')
+cool_mentor.rate_hw(best_student, 'Python', 10)
+cool_mentor.rate_hw(best_student, 'Python', 10)
+cool_mentor.rate_hw(best_student, 'Python', 10)
 
-# print(john.courses_in_progress[1])
-
-# print(john.gender)
-
-
-rev_1 = Reviewer('Nic', 'Popov', ["Math", "Git", "Python", "Biology"])
-rev_1.set_student_grade(john, 'Git', 4)
-rev_1.set_student_grade(john, 'Python', 5)
-rev_1.set_student_grade(bill, 'Python', 7)
-rev_1.set_student_grade(bill, 'Git', 5)
-rev_1.set_student_grade(john, 'Biology', 3)
-
-# print(john.grades)
-
-lec_1 = Lecturer("Adam", "Nolan", ["Biology", "Geom", "Python"])
-lec_2 = Lecturer("Игорь", "Петров", ["Math", "Git", "Physics"])
-john.set_lecturer_grade(lec_1, "Biology", 3)
-john.set_lecturer_grade(lec_2, "Git", 4)
-john.set_lecturer_grade(lec_1, "Python", 5)
-bill.set_lecturer_grade(lec_1, "Python", 7)
-bill.set_lecturer_grade(lec_2, "Git", 5)
-john.set_lecturer_grade(lec_1, "Biology", 8)
-print('Лекторы:')
-print(lec_1, lec_2, sep='\n\n')
+print(best_student.grades)
